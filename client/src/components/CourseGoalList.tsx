@@ -12,15 +12,7 @@ export default function CourseGoalList() {
     loading,
     error,
   } = useFetch<Goal[]>("http://localhost:8080/api/goals");
-  console.log(
-    "Rendering GoalList. Loading:",
-    loading,
-    "Error:",
-    error,
-    "Goals:",
-    goals
-  );
-  
+
   if (loading) {
     return <div>Loading goals...</div>;
   }

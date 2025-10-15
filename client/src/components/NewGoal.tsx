@@ -1,32 +1,66 @@
-import { useRef, type FormEvent } from "react";
+import { useState, useRef, type FormEvent } from "react";
+import { usePost } from "../hoooks/usePost.tsx";
+import { type Goal } from "../types/Goal";
 
-type NewGoalProps = {
-  onAddGoal: (goal: string, summary: string) => void;
+interface PostResponse {
+  message: string;
+  goal: Goal;
 }
 
-export default function NewGoal({onAddGoal}: NewGoalProps) {
-  const goal = useRef<HTMLInputElement>(null);
-  const summary = useRef<HTMLInputElement>(null);
+interface GoalPayload {
+  goal: string;
+  summary: string;
+}
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+export default function NewGoal() {
+  const { loading, error, postData } = usePost<PostResponse>();
+  const goalInputRef = useRef<HTMLInputElement>(null);
+  const summaryInputRef = useRef<HTMLInputElement>(null);
+  const [success, setSuccess] = useState<string>("");
+
+   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSuccess('');
 
-    const enteredGoal = goal.current!.value;
-    const enteredSummary = goal.current!.value;
+    if (!goalInputRef || !summaryInputRef) {
+      return;
+    }
+
+    const goal = goalInputRef.current!.value || "";
+    const summary = summaryInputRef.current!.value || "";
+
+    try {
+      if (!goal || !summary) {
+        throw new Error("All fields are required.");
+      }
+      const response = await postData<GoalPayload>("http://localhost:8080/api/goals/create-goal", {
+        goal,
+        summary,
+      });
+      setSuccess(response.message);
+      if (goalInputRef.current) goalInputRef.current.value = "";
+      if (summaryInputRef.current) summaryInputRef.current.value = "";
+    } catch (err) {}
 
     e.currentTarget.reset();
-    onAddGoal(enteredGoal, enteredSummary);
   }
 
-  return <form onSubmit={handleSubmit}>
-    <p>
-      <label htmlFor="goal" >Your Goal</label>
-      <input id='goal' type="text" ref={goal}/>
-    </p>
-    <p>
-      <label htmlFor="summary" >Your Summary</label>
-      <input id='summary' type="text" ref={summary}/>
-    </p>
-    <button>Add Goal</button>
-  </form>
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Add a New Goal</h2>
+      {success && <p style={{ color: "green" }}>{success}</p>}
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+      <p>
+        <label htmlFor="goal">Your Goal</label>
+        <input id="goal" type="text" ref={goalInputRef} />
+      </p>
+      <p>
+        <label htmlFor="summary">Your Summary</label>
+        <input id="summary" type="text" ref={summaryInputRef} />
+      </p>
+      <button type="submit" disabled={loading}>
+        {loading ? "Adding..." : "Add Goal"}
+      </button>
+    </form>
+  );
 }
