@@ -1,4 +1,3 @@
-// src/hooks/useFetch.ts
 import { useState, useEffect } from 'react';
 import axios, { type AxiosRequestConfig } from 'axios';
 

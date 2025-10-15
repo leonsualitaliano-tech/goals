@@ -7,7 +7,6 @@ interface PostState<T> {
   error: string | null;
 }
 
-// Custom hook to handle POST requests
 export function usePost<T, D>() {
   const [state, setState] = useState<PostState<T>>({
     data: null,
@@ -27,7 +26,7 @@ export function usePost<T, D>() {
       } else {
         setState({ data: null, loading: false, error: 'An unexpected error occurred.' });
       }
-      throw err; // Re-throw the error so the calling component can handle it
+      throw err;
     }
   };
 
