@@ -2,8 +2,8 @@ const Goals = require('./../models/goals');
 
 exports.allGoals = async (req, res) => {
   try {
-    const Goal = await Goals.find({});
-    res.status(200).json({ Goals: Goal });
+    const goals = await Goals.find({});
+    res.status(200).json(goals);
   } catch (error) {
     res.status(500).json({ error: error });
   }
