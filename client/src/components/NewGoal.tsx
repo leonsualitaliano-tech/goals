@@ -13,7 +13,7 @@ interface GoalPayload {
 }
 
 export default function NewGoal() {
-  const { loading, error, postData } = usePost<PostResponse>();
+  const { loading, error, postData } = usePost<PostResponse, GoalPayload>();
   const goalInputRef = useRef<HTMLInputElement>(null);
   const summaryInputRef = useRef<HTMLInputElement>(null);
   const [success, setSuccess] = useState<string>("");
@@ -33,14 +33,16 @@ export default function NewGoal() {
       if (!goal || !summary) {
         throw new Error("All fields are required.");
       }
-      const response = await postData<GoalPayload>("http://localhost:8080/api/goals/create-goal", {
+      const response = await postData("http://localhost:8080/api/goals/create-goal", {
         goal,
         summary,
       });
       setSuccess(response.message);
       if (goalInputRef.current) goalInputRef.current.value = "";
       if (summaryInputRef.current) summaryInputRef.current.value = "";
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
 
     e.currentTarget.reset();
   }
