@@ -9,11 +9,21 @@ const goalSchema = new mongoose.Schema({
     type: String,
     require: true
   }
-});
-
-goalSchema.statics.deleteById = async function (id) {
-  return this.findByIdAndDelete(id);
-};
+},
+  {
+    statics: {
+      onCreateGoal(goal, summary) {
+        return this.create({ goal, summary });
+      },
+      getAllGoals() {
+        return this.find({});
+      },
+      deleteGoalById(id) {
+        return this.findByIdAndDelete(id);
+      }
+    }
+  }
+);
 
 const Goal = mongoose.model('Goal', goalSchema);
 

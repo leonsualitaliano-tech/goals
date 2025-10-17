@@ -1,9 +1,8 @@
 const Goal = require('../models/goal.js');
-const mongoose = require('mongoose');
 
 exports.allGoals = async (req, res) => {
   try {
-    const goals = await Goal.find({});
+    const goals = await Goal.getAllGoals();
     res.status(200).json(goals);
   } catch (error) {
     res.status(500).json({ error: error });
@@ -17,10 +16,7 @@ exports.createGoal = async (req, res) => {
     return
   }
   try {
-    const goalAdded = await Goal.create({
-      goal: goal,
-      summary: summary
-    });
+    const goalAdded = await Goal.onCreateGoal(goal, summary);
     res.status(201).json({ message: "Goal created success", goal: goalAdded });
     return
   } catch (error) {
@@ -31,7 +27,7 @@ exports.createGoal = async (req, res) => {
 exports.deleteGoal = async (req, res) => {
   const goalId = req.params.id;
   try {
-    const deleted = await Goal.deleteById(goalId);
+    const deleted = await Goal.deleteGoalById(goalId);
     if (!deleted) {
       return res.status(404).json({ message: 'Goal non trovato' });
     }

@@ -14,8 +14,8 @@ export default function CourseGoalList() {
     }
   }, [goals]);
 
-  if (loading) return <div>Loading goals...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <InfoBox mode="hint">Loading goals...</InfoBox>;
+  if (error) return <InfoBox mode="warning" severity="low">Error: {error}</InfoBox>;
 
   let warningBox: ReactNode;
 
