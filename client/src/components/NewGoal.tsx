@@ -1,5 +1,5 @@
 import { useState, useRef, type FormEvent } from "react";
-import { usePost } from "../hoooks/usePost.tsx";
+import { usePost } from "../hooks/usePost.tsx";
 import { type Goal } from "../types/Goal";
 
 interface PostResponse {

@@ -1,8 +1,9 @@
-const Goals = require('./../models/goals');
+const Goal = require('../models/goal.js');
+const mongoose = require('mongoose');
 
 exports.allGoals = async (req, res) => {
   try {
-    const goals = await Goals.find({});
+    const goals = await Goal.find({});
     res.status(200).json(goals);
   } catch (error) {
     res.status(500).json({ error: error });
@@ -16,7 +17,7 @@ exports.createGoal = async (req, res) => {
     return
   }
   try {
-    const goalAdded = await Goals.create({
+    const goalAdded = await Goal.create({
       goal: goal,
       summary: summary
     });
@@ -28,12 +29,16 @@ exports.createGoal = async (req, res) => {
 }
 
 exports.deleteGoal = async (req, res) => {
-  const { goalId } = req.body;
-  console.log(goalId);
+  const goalId = req.params.id;
   try {
-    const goalDeleted = await Goals.deleteOne({ _id: goalId  });
-    res.status(201).json({ message: "Goal Deleted seccessfully", goalDeleted: goalDeleted });
-   } catch (error) {
-    res.status(400).json({ error: error });
+    const deleted = await Goal.deleteById(goalId);
+    if (!deleted) {
+      return res.status(404).json({ message: 'Goal non trovato' });
+    }
+    console.log(`Goal ${goalId} eliminato con successo`);
+    return res.status(200).json({ message: 'Goal eliminato', goal: deleted });
+  } catch (err) {
+    console.error('Errore durante la cancellazione:', err);
+    return res.status(500).json({ message: 'Errore server', error: err.message });
   }
-};
+}

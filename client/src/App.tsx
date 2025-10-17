@@ -6,7 +6,7 @@ import NewGoal from "./components/NewGoal.tsx";
 export type CourseGoal = {
   title: string;
   description: string;
-  id: number;
+  _id: string;
 };
 
 function App() {

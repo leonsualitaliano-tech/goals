@@ -6,12 +6,18 @@ const connectDB = require('./config/db');
 
 const PORT = process.env.PORT;
 
-const goalRouter = require('./routes/goals.js');
 connectDB();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+}));
+// app.use(cors());
+const goalRouter = require('./routes/goals.js');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
+
 
 app.use('/api/goals', cors(), goalRouter);
 

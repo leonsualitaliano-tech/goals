@@ -1,44 +1,44 @@
-import { type ReactNode } from "react";
-
+import { useEffect, useState, type ReactNode } from "react";
 import CourseGoal from "./CourseGoal.tsx";
 import InfoBox from "./InfoBox.tsx";
-
-import { useFetch } from "../hoooks/useFetch.tsx";
+import { useFetch } from "../hooks/useFetch.tsx";
 import { type Goal } from "../types/Goal.tsx";
 
 export default function CourseGoalList() {
-  const {
-    data: goals,
-    loading,
-    error,
-  } = useFetch<Goal[]>("http://localhost:8080/api/goals");
+  const { data: goals, loading, error } = useFetch<Goal[]>("http://localhost:8080/api/goals");
+  const [goalsState, setGoalsState] = useState<Goal[]>([]);
 
-  if (loading) {
-    return <div>Loading goals...</div>;
-  }
+  useEffect(() => {
+    if (goals) {
+      setGoalsState(goals);
+    }
+  }, [goals]);
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Loading goals...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   let warningBox: ReactNode;
 
-  if (goals!.length >= 4) {
+  if (goalsState.length >= 4) {
     warningBox = (
       <InfoBox mode="warning" severity="low">
-        You're collecting a lot of goals. Don't put to much on your plate.
+        You're collecting a lot of goals. Don't put too much on your plate.
       </InfoBox>
     );
   }
 
-  if (goals && goals.length > 0) {
+  const handleOnDelete = (id: string) => {
+    setGoalsState(prev => prev.filter(goal => goal._id !== id));
+  };
+
+  if (goalsState.length > 0) {
     return (
       <>
         {warningBox}
         <ul>
-          {goals.map((goal) => (
+          {goalsState.map(goal => (
             <li key={goal._id}>
-              <CourseGoal id={goal._id} title={goal.goal} onDelete={() => {}}>
+              <CourseGoal goal={goal} title={goal.goal} onDelete={handleOnDelete}>
                 <p>{goal.summary}</p>
               </CourseGoal>
             </li>
@@ -47,7 +47,6 @@ export default function CourseGoalList() {
       </>
     );
   }
-  return (
-    <InfoBox mode="hint">You have no course yet. Start adding some!</InfoBox>
-  );
+
+  return <InfoBox mode="hint">You have no course yet. Start adding some!</InfoBox>;
 }
