@@ -18,6 +18,7 @@ exports.createGoal = async (req, res) => {
   try {
     const goalAdded = await Goal.onCreateGoal(goal, summary);
     res.status(201).json({ message: "Goal created success", goal: goalAdded });
+    res.status(201).json( goalAdded );
     return
   } catch (error) {
     res.status(500).json({ error: error });
