@@ -3,12 +3,6 @@ import Header from "./components/Header.tsx";
 import goalsImg from "./assets/goals.jpg";
 import NewGoal from "./components/NewGoal.tsx";
 
-export type CourseGoal = {
-  title: string;
-  description: string;
-  _id: string;
-};
-
 function App() {
 
   return (

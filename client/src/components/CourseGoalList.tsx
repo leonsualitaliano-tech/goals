@@ -38,7 +38,7 @@ export default function CourseGoalList() {
         <ul>
           {goalsState.map(goal => (
             <li key={goal._id}>
-              <CourseGoal goal={goal} title={goal.goal} onDelete={handleOnDelete}>
+              <CourseGoal goal={goal} title={goal.goal} onDeleteGoal={handleOnDelete}>
                 <p>{goal.summary}</p>
               </CourseGoal>
             </li>
