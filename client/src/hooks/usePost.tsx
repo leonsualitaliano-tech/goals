@@ -18,6 +18,7 @@ export function usePost<T, D>() {
     setState({ data: null, loading: true, error: null });
     try {
       const response = await axios.post<T>(url, data);
+      console.log(response.data)
       setState({ data: response.data, loading: false, error: null });
       return response.data;
     } catch (err) {

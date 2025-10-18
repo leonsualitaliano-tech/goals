@@ -43,8 +43,6 @@ export default function NewGoal() {
     } catch (err) {
       console.log(err)
     }
-
-    e.currentTarget.reset();
   }
 
   return (
