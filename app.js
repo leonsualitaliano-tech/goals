@@ -1,4 +1,5 @@
 require('dotenv').config({path: './.config.env'}); //Questa riga carica le variabili d'ambiente da un file chiamato .config.env nella applicazione. Questo è importante per motivi di sicurezza, poiché ti permette di mantenere segrete informazioni sensibili (come le chiavi del database o le password) senza memorizzarle direttamente nel tuo codice sorgente
+const mongoose = require('mongoose');
 const express = require('express');//Qui importi il framework Express.js, un toolkit per Node.js che semplifica la creazione di applicazioni web e API.
 const helmet = require('helmet');//Imposta vari header HTTP per proteggere la tua applicazione da alcune delle più comuni vulnerabilità web, come il cross-site scripting (XSS) e il clickjacking.
 const rateLimit = require('express-rate-limit');// Proteggi la tua API dagli attacchi di forza bruta limitando il numero di richieste che un singolo indirizzo IP può effettuare in un determinato lasso di tempo.
@@ -10,6 +11,20 @@ const connectDB = require('./config/db');
 const PORT = process.env.PORT;//Questa riga recupera il numero di porta dalle tue variabili d'ambiente, caricate in precedenza da dotenv
 
 connectDB();//Questa riga esegue la funzione importata per stabilire una connessione al database all'avvio dell'applicazione.
+
+// Gestione degli eventi di connessione
+// La gestione degli eventi di disconnessione è più esplicita, indicando che verrà tentata una riconnessione automatica da Mongoose.
+// Questa configurazione consente all'applicazione di gestire lo stato della connessione in modo più reattivo.
+
+mongoose.connection.on('error', (error) => {
+  console.error('MongoDB connection Error: ', error);
+  // Potresti voler terminare l'app anche qui
+  // process.exit(1); 
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.warn('MongoDB disconnected. Attempting to reconnect...');
+});
 
 // Middleware di sicurezza:
 app.use(helmet());
