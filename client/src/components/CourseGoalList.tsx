@@ -3,6 +3,7 @@ import CourseGoal from "./CourseGoal.tsx";
 import InfoBox from "./InfoBox.tsx";
 import { useFetch } from "../hooks/useFetch.tsx";
 import { type Goal } from "../types/Goal.tsx";
+import NewGoal from "./NewGoal.tsx";
 
 export default function CourseGoalList() {
   const { data: goals, loading, error } = useFetch<Goal[]>("http://localhost:8080/api/goals");
@@ -31,9 +32,14 @@ export default function CourseGoalList() {
     setGoalsState(prev => prev.filter(goal => goal._id !== id));
   };
 
+  const handleNewGoal = (newGoal: Goal) =>  {
+    setGoalsState((prev) => [...prev, newGoal])
+  }
+
   if (goalsState.length > 0) {
     return (
       <>
+      <NewGoal onNewGoal={handleNewGoal}/>
         {warningBox}
         <ul>
           {goalsState.map(goal => (

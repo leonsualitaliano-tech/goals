@@ -12,7 +12,11 @@ interface GoalPayload {
   summary: string;
 }
 
-export default function NewGoal() {
+interface NewGoalProps {
+  onNewGoal: ( newGoal: Goal ) => void
+}
+
+export default function NewGoal({ onNewGoal }: NewGoalProps) {
   const { loading, error, postData } = usePost<PostResponse, GoalPayload>();
   const goalInputRef = useRef<HTMLInputElement>(null);
   const summaryInputRef = useRef<HTMLInputElement>(null);
@@ -38,6 +42,7 @@ export default function NewGoal() {
         summary,
       });
       setSuccess(response.message);
+      onNewGoal(response.goal);
       if (goalInputRef.current) goalInputRef.current.value = "";
       if (summaryInputRef.current) summaryInputRef.current.value = "";
     } catch (err) {
